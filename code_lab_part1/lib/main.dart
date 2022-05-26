@@ -11,14 +11,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: "Startup Name Generator",
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("Startup Name Generator"),
-        ),
-        body: const Center(child: RandomWords()),
-      ),
+      home: RandomWords(),
     );
   }
 }
@@ -37,7 +32,18 @@ class _RandomWordsState extends State<RandomWords> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Startup Name Generator"),
+        actions: [
+          IconButton(
+            onPressed: _pushSaved,
+            icon: const Icon(Icons.list),
+            tooltip: "Saved Suggestions",
+          ),
+        ],
+      ),
+      body: ListView.builder(
         padding: const EdgeInsets.all(16.0),
         itemBuilder: (context, i) {
           if (i.isOdd) return const Divider();
@@ -68,6 +74,35 @@ class _RandomWordsState extends State<RandomWords> {
               });
             },
           );
-        });
+        },
+      ),
+    );
+  }
+
+  void _pushSaved() {
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) {
+      final tiles = _saved.map((pair) {
+        return ListTile(
+          title: Text(
+            pair.asPascalCase,
+            style: _biggerFont,
+          ),
+        );
+      });
+
+      final divided = tiles.isNotEmpty
+          ? ListTile.divideTiles(
+              tiles: tiles,
+              context: context,
+            ).toList()
+          : <Widget>[];
+
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Saved Suggestions'),
+        ),
+        body: ListView(children: divided),
+      );
+    }));
   }
 }
