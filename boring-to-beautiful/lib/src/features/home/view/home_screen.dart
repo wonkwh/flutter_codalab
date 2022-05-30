@@ -27,6 +27,52 @@ class _HomeScreenState extends State<HomeScreen> {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Add conditional mobile layout
+        if (constraints.isMobile) {
+          return DefaultTabController(
+            length: 4,
+            child: Scaffold(
+              appBar: AppBar(
+                centerTitle: false,
+                title: const Text("Good Afternoon"),
+                actions: const [BrightnessToggle()],
+                bottom: const TabBar(
+                  tabs: [
+                    Tab(text: 'Home'),
+                    Tab(text: 'Recently played'),
+                    Tab(text: 'New'),
+                    Tab(text: 'Top'),
+                  ],
+                ),
+              ),
+              body: LayoutBuilder(
+                builder: (context, constraints) => TabBarView(
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          HomeArtists(
+                              artists: artists, constraints: constraints),
+                        ],
+                      ),
+                    ),
+                    HomeRecent(
+                      playlists: playlists,
+                      axis: Axis.vertical,
+                    ),
+                    PlaylistSongs(
+                      playlist: topSongs,
+                      constraints: constraints,
+                    ),
+                    PlaylistSongs(
+                      playlist: newReleases,
+                      constraints: constraints,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        }
 
         return Scaffold(
           body: SingleChildScrollView(
